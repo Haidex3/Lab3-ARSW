@@ -131,3 +131,13 @@ Con esto arreglos podemos observar que el consumo de la aplicacion bajo casi a c
 
 **imagen 2**
 
+**parte 1.3**
+
+Para poder resolver esto podemos hacer una `BlockingQueue` de Java `(java.util.concurrent)`, que ya maneja internamente el bloqueo con `put()` y `take()`.
+
+`put(E e)`:bloquea al Productor si la cola está llena.
+
+`take()`: bloquea al Consumidor si la cola está vacía.
+
+Esto elimina la necesidad de manejar `wait()`/`notify()` manualmente.
+

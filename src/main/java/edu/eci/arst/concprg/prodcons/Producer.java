@@ -5,40 +5,32 @@
  */
 package edu.eci.arst.concprg.prodcons;
 
-import java.util.Queue;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.concurrent.BlockingQueue;
 
 public class Producer extends Thread {
 
-    private final Queue<Integer> queue;
+    private final BlockingQueue<Integer> queue;
     private int dataSeed = 0;
     private final Random rand;
-    private final long stockLimit;
 
-    public Producer(Queue<Integer> queue, long stockLimit) {
+    public Producer(BlockingQueue<Integer> queue) {
         this.queue = queue;
         rand = new Random(System.currentTimeMillis());
-        this.stockLimit = stockLimit;
     }
 
     @Override
     public void run() {
         while (true) {
             dataSeed = dataSeed + rand.nextInt(100);
-
-            synchronized (queue) {
-                queue.add(dataSeed);
-                System.out.println("Producer added " + dataSeed);
-                // Notifica a los consumidores en espera
-                queue.notifyAll();
-            }
-
             try {
-                Thread.sleep(1000); // Producción lenta
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Producer.class.getName()).log(Level.SEVERE, null, ex);
+                // put() bloquea si la cola ya alcanzó el límite
+                queue.put(dataSeed);
+                System.out.println("Producer added " + dataSeed);
+                // Producción MUY rápida
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
