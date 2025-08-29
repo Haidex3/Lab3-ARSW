@@ -114,4 +114,20 @@ El `Producer` tiene un `while(true)` que siempre está produciendo un nuevo núm
 
 Por lo tanto al ejecutar Visualvm, podemos observar que el consumo de cpu es bastante elevado para lo que realmente se esta haciendo.
 
+**imagen 1**
+
+**parte 1.2**
+Antes de arreglar:
+
+El `Consumer` revisaba la cola en un bucle sin fin lo cual producia un consumo de CPU.
+
+Ahora:
+
+El `Consumer` se queda bloqueado con `queue.wait()` cuando la cola está vacía.
+
+El `Producer` notifica al consumidor para que vuela a reanudar su operacion con `queue.notifyAll()` al agregar un elemento.
+
+Con esto arreglos podemos observar que el consumo de la aplicacion bajo casi a cero:
+
+**imagen 2**
 
