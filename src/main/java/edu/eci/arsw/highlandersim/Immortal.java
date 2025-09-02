@@ -21,6 +21,8 @@ public class Immortal extends Thread {
 
     private static final Object pauseLock = new Object();
 
+    private final Object lock = new Object();
+
     public Immortal(String name, List<Immortal> immortalsPopulation, int health, int defaultDamageValue, ImmortalUpdateReportCallback ucb) {
         super(name);
         this.updateCallback=ucb;
@@ -82,14 +84,25 @@ public class Immortal extends Thread {
 
     public void fight(Immortal i2) {
 
-        if (i2.getHealth() > 0) {
-            i2.changeHealth(i2.getHealth() - defaultDamageValue);
-            this.health += defaultDamageValue;
-            updateCallback.processReport("Fight: " + this + " vs " + i2+"\n");
-        } else {
-            updateCallback.processReport(this + " says:" + i2 + " is already dead!\n");
+        Immortal first = this;
+        Immortal second = i2;
+        int h1 = System.identityHashCode(first);
+        int h2 = System.identityHashCode(second);
+        if (h1 > h2) {
+            Immortal tmp = first; first = second; second = tmp;
         }
 
+        synchronized (first.lock) {
+            synchronized (second.lock) {
+                if (i2.health > 0) {
+                    i2.health -= defaultDamageValue;
+                    this.health += defaultDamageValue;
+                    updateCallback.processReport("Fight: " + this + " vs " + i2 + "\n");
+                } else {
+                    updateCallback.processReport(this + " says: " + i2 + " is already dead!\n");
+                }
+            }
+        }
     }
 
     public void changeHealth(int v) {

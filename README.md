@@ -149,6 +149,8 @@ Al observar un poco en el codigo nos podemos dar cuenta de que todos los jugador
 
 	DEFAULT_IMMORTAL_HEALTH = 100
 
+Encontrada en la clase `Inmortal`
+
 Por lo cual el invariante en este caso seria el numero de jugadores multiplicado por 100:
 
 `Salud total inicial=N×100`
@@ -174,3 +176,23 @@ En la clase `ControlFrame`
 En el botón “Pause and check” ahora se llama a `Immortal.pauseAll()`, garantizando que todos los hilos sean detenidos antes de calcular la suma de las vidas, de esta forma, cuando se hace la suma, ningún hilo puede estar modificando la salud.
 
 En el botón “Resume” se implementó la llamada a `Immortal.resumeAll()`, que libera a los hilos y les permite continuar su ejecución normal.
+
+**Parte 3.5**
+
+Al probar nuevamente con las modificaciones del punto anterior podemos observar que a pesar de pausarse correctamente no se esta cumpliendo el invariante
+
+**Parte 3.6**
+
+Identificamos como region critica el uan parte del metodo `fight()` donde un inmortal resta vida a otro y al mismo tiempo incrementa la suya.
+
+Para poder resolver la inconsistencia del invariante:
+
+- Asignamos un lock individual a cada inmortal, de modo que cualquier operación de lectura o escritura sobre su salud quedo protegida.
+
+- Sincronizamos el bloque de pelea tomando los locks de los dos inmortales involucrados, asegurando que la transferencia de vida sea una operación indivisible.
+
+Definimos un orden global para adquirir los locks (usando `System.identityHashCode`) con el fin de evitar interbloqueos cuando dos hilos intentan pelear al mismo tiempo, es decir aplicar la estrategia de bloqueos por "orden".
+
+Protegimos los métodos `getHealth()`, `changeHealth()` y `toString()` con el lock de cada inmortal.
+
+
