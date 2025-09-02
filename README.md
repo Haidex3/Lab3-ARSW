@@ -141,3 +141,36 @@ Para poder resolver esto podemos hacer una `BlockingQueue` de Java `(java.util.c
 
 Esto elimina la necesidad de manejar `wait()`/`notify()` manualmente.
 
+
+
+**parte 3.2**
+
+Al observar un poco en el codigo nos podemos dar cuenta de que todos los jugadores empiezan con 100 puntos de vida gracias a la linea:
+
+	DEFAULT_IMMORTAL_HEALTH = 100
+
+Por lo cual el invariante en este caso seria el numero de jugadores multiplicado por 100:
+
+`Salud total inicial=N×100`
+
+**parte 3.3**
+
+Al ejecutar el codigo y hacer el probar el boton `pause and check` nos damos cuenta que el invariante no se cumple ya que cada vez que se pulsa el boton nos da un resultado distinto
+
+**parte 3.4**
+
+Ahora para resolver el error segun nuestra primera teoria lo que hicimos fue que se pausen todos los hilos al momento de hacer el check, ademas de implementar lo necesario para el "resume", para esto agregamos:
+
+En la clase `Immortal`
+
+- Se introdujimos una variable estática `paused` y un objeto de sincronización pauseLock.
+
+- Dentro del ciclo `run()`, antes de ejecutar la lógica de pelea, cada hilo verifica si está en pausa, si lo está, se bloquea en `pauseLock.wait()` hasta que sea reanudado.
+
+Ademas agregamos los métodos estáticos `pauseAll()` y `resumeAll()` para activar la pausa o reanudar todos los hilos a la vez.
+
+En la clase `ControlFrame`
+
+En el botón “Pause and check” ahora se llama a `Immortal.pauseAll()`, garantizando que todos los hilos sean detenidos antes de calcular la suma de las vidas, de esta forma, cuando se hace la suma, ningún hilo puede estar modificando la salud.
+
+En el botón “Resume” se implementó la llamada a `Immortal.resumeAll()`, que libera a los hilos y les permite continuar su ejecución normal.
