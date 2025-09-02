@@ -14,13 +14,13 @@ public class StartProduction {
     
     public static void main(String[] args) {
         
-        int stockLimit = 5; // límite pequeño para probar
+        int stockLimit = 5; 
         BlockingQueue<Integer> queue = new ArrayBlockingQueue<>(stockLimit);
 
         new Producer(queue).start();
 
         try {
-            Thread.sleep(2000); // Dejamos que el productor llene un poco
+            Thread.sleep(2000);
         } catch (InterruptedException ex) {
             Logger.getLogger(StartProduction.class.getName()).log(Level.SEVERE, null, ex);
         }

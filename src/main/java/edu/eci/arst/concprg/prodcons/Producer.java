@@ -24,10 +24,8 @@ public class Producer extends Thread {
         while (true) {
             dataSeed = dataSeed + rand.nextInt(100);
             try {
-                // put() bloquea si la cola ya alcanzó el límite
                 queue.put(dataSeed);
                 System.out.println("Producer added " + dataSeed);
-                // Producción MUY rápida
                 Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
