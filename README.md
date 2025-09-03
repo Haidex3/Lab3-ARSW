@@ -196,3 +196,28 @@ Definimos un orden global para adquirir los locks (usando `System.identityHashCo
 Protegimos los métodos `getHealth()`, `changeHealth()` y `toString()` con el lock de cada inmortal.
 
 
+**parte 3.10**
+
+Para arreglar el problema donde los inmortales se pelean con inmortales ya muertos, modificamos el metodo `Fight`dentro de la clase `Inmortal`agregando la condicion de que si el inmortal que recibe el daño llega a tener vida 0, este sera eliminado de la lista:
+
+	if (i2.health <= 0) {
+		immortalsPopulation.remove(i2);
+		updateCallback.processReport(i2 + " has been removed from the game!\n");
+	}
+
+Pero al momento de ejecutarlo podemos notar varias inconsistencias, por ejemplo:
+
+![alt text](image.png)
+
+![alt text](image-1.png)
+
+Donde las dos capturas hacen parte de la misma ejecucion pero en momentos distintos, al observar los resultados de las sumas nos damos cuenta que el invariante no se cumple, esto es causado porque:
+
+Mientras un inmortal intenta pelear, accede a otro elemento de la lista,Si simultáneamente otro hilo elimina a un inmortal de la lista (porque ya murió), el índice cambia y se pueden producir errores de concurrencia.
+
+Esto se ve mayormente reflejado cuando hay más cantidad porque las operaciones de lectura y escritura sobre la lista ocurren al mismo tiempo.
+
+![alt text](image-2.png)
+
+Luego de ver estos errores optamos por hacer uso de `CopyOnWriteArrayList` lo cual nos resolvia el problema con un numero relativamente pequeño de inmortales, sin embargo al llegar a 10k nos dimos cuenta de que esta estruvtura no soporta a tantos, haciendonos cambiar el metodo para la solucion:
+

@@ -98,6 +98,10 @@ public class Immortal extends Thread {
                     i2.health -= defaultDamageValue;
                     this.health += defaultDamageValue;
                     updateCallback.processReport("Fight: " + this + " vs " + i2 + "\n");
+                    if (i2.health <= 0) {
+                    immortalsPopulation.remove(i2);
+                    updateCallback.processReport(i2 + " has been removed from the game!\n");
+                }
                 } else {
                     updateCallback.processReport(this + " says: " + i2 + " is already dead!\n");
                 }
