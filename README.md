@@ -155,6 +155,8 @@ Por lo cual el invariante en este caso seria el numero de jugadores multiplicado
 
 `Salud total inicial=N×100`
 
+La relación de los puntos que pierde un jugador vs los puntos que gana un jugador son proporcionales.
+
 **parte 3.3**
 
 Al ejecutar el codigo y hacer el probar el boton `pause and check` nos damos cuenta que el invariante no se cumple ya que cada vez que se pulsa el boton nos da un resultado distinto
