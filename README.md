@@ -204,7 +204,7 @@ Esto se ve mayormente reflejado cuando hay más cantidad porque las operaciones 
 
 Luego de ver estos errores optamos por hacer uso de `CopyOnWriteArrayList`, resolvía el problema con un número relativamente pequeño de inmortales, sin embargo al llegar a 10k nos dimos cuenta de que esta estructura no soporta a tantos, haciendonos cambiar la solución a:
 
-Hicimos "health" atómico y adicionalmente implementamos una bandera que indica si un "inmortal" está vivo o no con el fin de no remover elementos de la lista en ejecución, ya que es una región critica.
+Hicimos "health" atómico y adicionalmente implementamos una bandera que indica si un "inmortal" está vivo o no con el fin de no remover elementos de la lista en ejecución, ya que es una región critica. Acá podemos comprobar que se cumple el invariante con 10k.
 
 <p align="center">
   <img src="img/img 7.jpg" width="600"/><br>
